@@ -82,6 +82,9 @@ vim.opt.scrolloff = 10
 -- 'jj' in insert mode to exit out of insert mode
 vim.keymap.set('i', 'jj', '<Esc>')
 
+-- shortcut for Go's err not nil
+vim.keymap.set('i', 'xx', 'if err != nil {<Enter><Enter>}')
+
 -- Open explorer
 vim.keymap.set('n', '<Leader>pv', vim.cmd.Ex, { desc = 'Open explorer' })
 
@@ -200,6 +203,79 @@ require('lazy').setup({
   -- Then, because we use the `config` key, the configuration only runs
   -- after the plugin has been loaded:
   --  config = function() ... end
+
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('harpoon'):setup()
+    end,
+    keys = {
+      {
+        '<leader>a',
+        function()
+          require('harpoon'):list():add()
+        end,
+        desc = 'add to harpoon file',
+      },
+      {
+        '<C-e>',
+        function()
+          local harpoon = require 'harpoon'
+          harpoon.ui:toggle_quick_menu(harpoon:list())
+        end,
+        desc = 'harpoon quick menu',
+      },
+      {
+        '<leader>1',
+        function()
+          require('harpoon'):list():select(1)
+        end,
+        desc = 'harpoon to file 1',
+      },
+      {
+        '<leader>2',
+        function()
+          require('harpoon'):list():select(2)
+        end,
+        desc = 'harpoon to file 2',
+      },
+      {
+        '<leader>3',
+        function()
+          require('harpoon'):list():select(3)
+        end,
+        desc = 'harpoon to file 3',
+      },
+      {
+        '<leader>4',
+        function()
+          require('harpoon'):list():select(4)
+        end,
+        desc = 'harpoon to file 4',
+      },
+      {
+        '<leader>5',
+        function()
+          require('harpoon'):list():select(5)
+        end,
+        desc = 'harpoon to file 5',
+      },
+      {
+        '<S-h>',
+        function()
+          require('harpoon'):list():prev()
+        end,
+      },
+      {
+        '<S-l>',
+        function()
+          require('harpoon'):list():next()
+        end,
+      },
+    },
+  },
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
