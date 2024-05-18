@@ -87,7 +87,10 @@ vim.keymap.set('i', 'jj', '<Esc>')
 vim.keymap.set('i', 'xx', 'if err != nil {<Enter><Enter>}')
 
 -- Open explorer
-vim.keymap.set('n', '<Leader>pv', vim.cmd.Ex, { desc = 'Open explorer' })
+vim.keymap.set('n', '<leader>pv', vim.cmd.Ex, { desc = 'Open explorer' })
+
+vim.keymap.set('n', '<leader>tt', vim.cmd.TroubleToggle, { desc = 'Toggle Trouble list' })
+vim.keymap.set('n', '<leader>tr', vim.cmd.TroubleRefresh, { desc = 'Refresh Trouble list' })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
@@ -306,6 +309,17 @@ require('lazy').setup({
           require('harpoon'):list():next()
         end,
       },
+    },
+  },
+
+  -- Troubleshooting plugin
+  {
+    'folke/trouble.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
     },
   },
 
@@ -770,7 +784,6 @@ require('lazy').setup({
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
           ['<C-y>'] = cmp.mapping.confirm { select = true },
-          ['<Enter>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
