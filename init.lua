@@ -16,6 +16,7 @@ vim.opt.whichwrap:append '<,>,[,],h,l' -- wraps around at the end of line
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
 -- Make line numbers default
