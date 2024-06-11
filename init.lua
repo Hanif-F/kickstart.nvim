@@ -89,7 +89,7 @@ vim.keymap.set('i', 'xx', 'if err != nil {<Enter><Enter>}')
 -- Open explorer
 vim.keymap.set('n', '<leader>pv', vim.cmd.Ex, { desc = 'Open explorer' })
 
-vim.keymap.set('n', '<leader>tt', vim.cmd.TroubleToggle, { desc = 'Toggle Trouble list' })
+vim.keymap.set('n', '<leader>tt', '<cmd>Trouble diagnostics toggle<cr>', { desc = 'Toggle Trouble list' })
 vim.keymap.set('n', '<leader>tr', vim.cmd.TroubleRefresh, { desc = 'Refresh Trouble list' })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
@@ -616,7 +616,21 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {
+          settings = {
+            gopls = {
+              ['ui.inlayhint.hints'] = {
+                rangeVariableTypes = true,
+                parameterNames = true,
+                constantValues = true,
+                assignVariableTypes = true,
+                compositeLiteralFields = true,
+                compositeLiteralTypes = true,
+                functionTypeParameters = true,
+              },
+            },
+          },
+        },
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -637,6 +651,10 @@ require('lazy').setup({
               completion = {
                 callSnippet = 'Replace',
               },
+              hint = {
+                enable = true, -- necessary
+              },
+
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               -- diagnostics = { disable = { 'missing-fields' } },
             },
