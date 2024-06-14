@@ -84,13 +84,16 @@ vim.opt.scrolloff = 10
 vim.keymap.set('i', 'jj', '<Esc>')
 
 -- shortcut for Go's err not nil
-vim.keymap.set('i', 'xx', 'if err != nil {<Enter><Enter>}')
+vim.keymap.set('i', 'xx', 'if err != nil {<Enter>}<Esc>O')
 
 -- Open explorer
 vim.keymap.set('n', '<leader>pv', vim.cmd.Ex, { desc = 'Open explorer' })
 
 vim.keymap.set('n', '<leader>tt', '<cmd>Trouble diagnostics toggle<cr>', { desc = 'Toggle Trouble list' })
 vim.keymap.set('n', '<leader>tr', vim.cmd.TroubleRefresh, { desc = 'Refresh Trouble list' })
+
+-- Toggle all folds under cursor
+vim.keymap.set('n', 'F', 'zA', { desc = 'Refresh Trouble list' })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
@@ -245,6 +248,7 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
       require('harpoon'):setup()
+      require('harpoon'):extend(require('harpoon.extensions').builtins.command_on_nav 'UfoEnableFold')
     end,
     keys = {
       {
@@ -321,6 +325,47 @@ require('lazy').setup({
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
     },
+  },
+
+  {
+    'kevinhwang91/nvim-ufo',
+    event = 'BufRead',
+    dependencies = {
+      { 'kevinhwang91/promise-async' },
+    },
+    keys = {
+      {
+        'zR',
+        function()
+          require('ufo').openAllFolds()
+        end,
+      },
+      {
+        'zM',
+        function()
+          require('ufo').closeAllFolds()
+        end,
+      },
+      {
+        'K',
+        function()
+          local winid = require('ufo').peekFoldedLinesUnderCursor()
+          if not winid then
+            vim.lsp.buf.hover()
+          end
+        end,
+      },
+    },
+    config = function()
+      -- Fold options
+      vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+      vim.o.foldcolumn = '1' -- '0' is not bad
+      vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+
+      require('ufo').setup()
+    end,
   },
 
   { -- Useful plugin to show you pending keybinds.
@@ -604,6 +649,10 @@ require('lazy').setup({
       --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+      capabilities.textDocument.foldingRange = {
+        dynamicRegistration = false,
+        lineFoldingOnly = true,
+      }
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
